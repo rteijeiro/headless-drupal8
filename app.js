@@ -47,6 +47,9 @@ $(function() {
   var App = {
     showArticles: function() {
       var AppArticles = new ArticlesList({ collection: new Articles });
+    },
+    showArticle: function(nid) {
+      console.log(nid);
     }
   }
 
@@ -64,6 +67,6 @@ $(function() {
   });
 
   var AppRouter = new Router;
-  Backbone.history.start();
+  Backbone.history.start({ pushState: true, root: '/headless/' });
 
 });

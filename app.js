@@ -44,6 +44,26 @@ $(function() {
     }
   });
 
-  var App = new ArticlesList({ collection: new Articles });
+  var App = {
+    showArticles: function() {
+      var AppArticles = new ArticlesList({ collection: new Articles });
+    }
+  }
+
+  var Router = Backbone.Router.extend({
+    routes: {
+      '': 'showArticles',
+      'article/:nid': 'showArticle'
+    },
+    showArticles: function() {
+      App.showArticles();
+    },
+    showArticle: function(nid) {
+      App.showArticle(nid);
+    }
+  });
+
+  var AppRouter = new Router;
+  Backbone.history.start();
 
 });

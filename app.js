@@ -67,6 +67,6 @@ $(function() {
   });
 
   var AppRouter = new Router;
-  Backbone.history.start({ pushState: true, root: '/headless/' });
+  Backbone.history.start({ pushState: true, root: '/drupal/app/' });
 
 });

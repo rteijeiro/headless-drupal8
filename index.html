@@ -14,9 +14,8 @@
     <!-- Templates -->
 
     <!-- Single Article template -->
-    <script type="text/template" id="article-view">
-      <h2><%= title %></h2>
-      <%= body %>
+    <script type="text/template" id="article-item-view">
+      <h2><a href="#article/<%= nid %>"><%= title %></a></h2>
     </script>
 
     <!-- List of Articles template -->
@@ -24,6 +23,12 @@
       <h1>List of Drupal Articles</h1>
       <ul></ul>
       <h3>End of List of Drupal Articles</h3>
+    </script>
+
+    <!-- Full Article template -->
+    <script type="text/template" id="article-details">
+      <h2><%= title %></h2>
+      <%= body %>
     </script>
 
   </body>

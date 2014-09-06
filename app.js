@@ -1,72 +1,122 @@
 $(function() {
 
+  // Model definition.
+  // Provides model structure and default values if needed.
   var Article = Backbone.Model.extend({});
 
-  var Articles = Backbone.Collection.extend({
+  // Collection definition.
+  // Provides the model used to include data in the collection and also
+  // the URL where the data is going to be fetched.
+  var ArticleCollection = Backbone.Collection.extend({
+
     model: Article,
-    url: 'http://path-to-your-localhost/drupal/articles/rest'
+
+    url: 'http://rteijeiro-macbook.local:8081/drupal/articles/rest'
+
   });
 
-  var ArticleView = Backbone.View.extend({
-    tagName: 'li',
+  // Articles list view definition.
+  // Provides the template used to display a list of articles.
+  var ArticlesListView = Backbone.View.extend({
 
-    template: _.template($('#article-view').html()),
-
-    render: function() {
-      this.$el.html(this.template(this.model.toJSON()));
-
-      return this;
-    }
-  });
-
-  var ArticlesList = Backbone.View.extend({
-    el: $('#main-container'),
-
-    template: _.template($('#articles-list').html()),
+    tagName: 'ul',
 
     initialize: function() {
-      self = this;
-      this.collection.fetch({
-        success: function() {
-          self.render();
-        }
-      });
+      this.model.bind('reset', this.render, this);
     },
 
-    render: function() {
-      this.el.innerHTML = this.template();
-      var ul = this.$el.find('ul');
-      this.collection.forEach( function(model) {
-        ul.append((new ArticleView({ model: model })).render().el);
+    render: function(event) {
+      _.each(this.model.models, function(article) {
+        this.$el.append(new ArticleListItemView({ model: article }).render().el);
       }, this);
 
       return this;
     }
+
+  });
+
+  // Article list item view definition.
+  // Provides the template used to display an article item in
+  // the articles list.
+  var ArticleListItemView = Backbone.View.extend({
+
+    tagName: 'li',
+
+    template: _.template($('#article-item-view').html()),
+
+    render: function(event) {
+      this.$el.html(this.template(this.model.toJSON()));
+
+      return this;
+    }
+
+  });
+
+  // Single article view definition.
+  // Provides the template used to display a single article.
+  var ArticleView = Backbone.View.extend({
+
+    template: _.template($('#article-details').html()),
+
+    render: function(event) {
+      this.$el.html(this.template(this.model.toJSON()));
+
+      return this;
+    }
+
+  });
+
+  // Application Router.
+  // Provides the routes for application navigation.
+  var AppRouter = Backbone.Router.extend({
+
+    routes: {
+      '': 'articlesList',
+      'article/:id': 'articleDetails'
+    },
+    articlesList: function() {
+      App.list();
+    },
+    articleDetails: function(id) {
+      console.log("CACAFUTI");
+      App.details(id);
+    }
+
   });
 
   var App = {
-    showArticles: function() {
-      var AppArticles = new ArticlesList({ collection: new Articles });
+
+    list: function() {
+      this.articlesList = new ArticleCollection();
+      self = this;
+      this.articlesList.fetch({
+        
+        success: function(response) {
+
+          self.articlesListView = new ArticlesListView({ model: self.articlesList });
+          $('#main-container').html(self.articlesListView.render().el);
+          if (self.requestedId) {
+            self.details(self.requestedId);
+          }
+        }
+
+      });
     },
-    showArticle: function(nid) {
-      console.log(nid);
+
+    details: function(id) {
+      if (this.articlesList) {
+        this.article = this.articlesList.get(id);
+        this.articleView = new ArticleView({ model: this.article });
+        $('#main-container').html(this.articleView.render().el);
+      }
+      else {
+        this.requestedId = id;
+        this.list();
+      }
     }
   }
 
-  var Router = Backbone.Router.extend({
-    routes: {
-      '': 'showArticles',
-      'article/:nid': 'showArticle'
-    },
-    showArticles: function() {
-      App.showArticles();
-    },
-    showArticle: function(nid) {
-      App.showArticle(nid);
-    }
-  });
-
-  var AppRouter = new Router;
+  var router = new AppRouter;
   Backbone.history.start({ pushState: true, root: '/drupal/app/' });
 
 });

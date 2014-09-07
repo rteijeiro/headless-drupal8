@@ -2,7 +2,9 @@ $(function() {
 
   // Model definition.
   // Provides model structure and default values if needed.
-  var Article = Backbone.Model.extend({});
+  var Article = Backbone.Model.extend({
+    idAttribute: 'nid'
+  });
 
   // Collection definition.
   // Provides the model used to include data in the collection and also
@@ -78,7 +80,6 @@ $(function() {
       App.list();
     },
     articleDetails: function(id) {
-      console.log("CACAFUTI");
       App.details(id);
     }
 
@@ -107,7 +108,7 @@ $(function() {
       if (this.articlesList) {
         this.article = this.articlesList.get(id);
         this.articleView = new ArticleView({ model: this.article });
-        $('#main-container').html(this.articleView.render().el);
+        $('#article-details-container').html(this.articleView.render().el);
       }
       else {
         this.requestedId = id;
@@ -117,6 +118,6 @@ $(function() {
   }
 
   var router = new AppRouter;
-  Backbone.history.start({ pushState: true, root: '/drupal/app/' });
+  Backbone.history.start({ root: '/drupal/app/' });
 
 });

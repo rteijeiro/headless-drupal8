@@ -3,7 +3,15 @@ $(function() {
   // Model definition.
   // Provides model structure and default values if needed.
   var Article = Backbone.Model.extend({
-    idAttribute: 'nid'
+
+    idAttribute: 'nid',
+
+    sync: function(method, model, options) {
+      console.log(method);
+
+      return Backbone.sync.apply(this, arguments);
+    }
+
   });
 
   // Collection definition.
@@ -68,19 +76,38 @@ $(function() {
 
   });
 
+  // Article add/edit form.
+  // Provides the template used to display the form to add
+  // or edit an article.
+  var ArticleEditView = Backbone.View.extend({
+
+    template: _.template($('#article-form').html()),
+
+    render: function(event) {
+      this.$el.html(this.template(this.model.toJSON()));
+
+      return this;
+    }
+
+  });
+
   // Application Router.
   // Provides the routes for application navigation.
   var AppRouter = Backbone.Router.extend({
 
     routes: {
       '': 'articlesList',
-      'article/:id': 'articleDetails'
+      'article/:nid': 'articleDetails',
+      'article/:nid/edit': 'articleEdit'
     },
     articlesList: function() {
       App.list();
     },
-    articleDetails: function(id) {
-      App.details(id);
+    articleDetails: function(nid) {
+      App.details(nid);
+    },
+    articleEdit: function(nid) {
+      App.edit(nid);
     }
 
   });
@@ -104,17 +131,30 @@ $(function() {
       });
     },
 
-    details: function(id) {
+    details: function(nid) {
       if (this.articlesList) {
-        this.article = this.articlesList.get(id);
+        this.article = this.articlesList.get(nid);
         this.articleView = new ArticleView({ model: this.article });
         $('#article-details-container').html(this.articleView.render().el);
       }
       else {
-        this.requestedId = id;
+        this.requestedId = nid;
+        this.list();
+      }
+    },
+
+    edit: function(nid) {
+      if (this.articlesList) {
+        this.article = this.articlesList.get(nid);
+        this.articleView = new ArticleEditView({ model: this.article });
+        $('#article-details-container').html(this.articleView.render().el);
+      }
+      else {
+        this.requestedId = nid;
         this.list();
       }
     }
+
   }
 
   var router = new AppRouter;

@@ -14,11 +14,6 @@
 
     <!-- Templates -->
 
-    <!-- Single Article template -->
-    <script type="text/template" id="article-item-view">
-      <h2><a href="#article/<%= nid %>"><%= title %></a></h2>
-    </script>
-
     <!-- List of Articles template -->
     <script type="text/template" id="articles-list">
       <h1>List of Drupal Articles</h1>
@@ -26,10 +21,24 @@
       <h3>End of List of Drupal Articles</h3>
     </script>
 
-    <!-- Full Article template -->
+    <!-- Article item template -->
+    <script type="text/template" id="article-item-view">
+      <h2><a href="#article/<%= nid %>"><%= title %></a></h2>
+      <span><a href="#article/<%= nid %>/edit">[edit]</a></span>
+    </script>
+
+    <!-- Article details template -->
     <script type="text/template" id="article-details">
       <h2><%= title %></h2>
       <%= body %>
+    </script>
+
+    <script type="text/template" id="article-form">
+      <input type="hidden" id="article-nid" name="nid" value="<%= nid %>" />
+      <label>Title:</label>
+      <input size="60" type="text" id="article-title" name="title" value="<%= title %>" />
+      <label>Body:</label>
+      <textarea rows="10" cols="50" id="article-body" name="body"><%= body %></textarea>
     </script>
 
   </body>

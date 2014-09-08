@@ -25,6 +25,7 @@
     <script type="text/template" id="article-item-view">
       <h2><a href="#article/<%= nid %>"><%= title %></a></h2>
       <span><a href="#article/<%= nid %>/edit">[edit]</a></span>
+      <span><a href="#article/<%= nid %>/delete">[delete]</a></span>
     </script>
 
     <!-- Article details template -->
@@ -39,6 +40,7 @@
       <input size="60" type="text" id="article-title" name="title" value="<%= title %>" />
       <label>Body:</label>
       <textarea rows="10" cols="50" id="article-body" name="body"><%= body %></textarea>
+      <button name="article-save">Save</button>
     </script>
 
   </body>

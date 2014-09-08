@@ -7,7 +7,24 @@ $(function() {
     idAttribute: 'nid',
 
     sync: function(method, model, options) {
-      console.log(method);
+
+      // Set authentication.
+      options = options || (options = {});
+      options.beforeSend = function(xhr) {
+        var user = 'user';
+        var pass = 'password';
+
+        xhr.setRequestHeader('Authorization', ("Basic " + btoa(user + ':' + pass)));
+      };
+
+      switch(method) {
+
+        case 'patch':
+        case 'delete':
+          options.url = '../node/' + this.get('nid');
+          break;
+
+      }
 
       return Backbone.sync.apply(this, arguments);
     }
@@ -98,7 +115,8 @@ $(function() {
     routes: {
       '': 'articlesList',
       'article/:nid': 'articleDetails',
-      'article/:nid/edit': 'articleEdit'
+      'article/:nid/edit': 'articleEdit',
+      'article/:nid/delete': 'articleDelete'
     },
     articlesList: function() {
       App.list();
@@ -108,6 +126,9 @@ $(function() {
     },
     articleEdit: function(nid) {
       App.edit(nid);
+    },
+    articleDelete: function(nid) {
+      App.delete(nid);
     }
 
   });
@@ -153,7 +174,18 @@ $(function() {
         this.requestedId = nid;
         this.list();
       }
-    }
+    },
+
+    delete: function(nid) {
+      if (this.articlesList) {
+        this.article = this.articlesList.get(nid);
+        this.article.destroy();
+      }
+      else {
+        this.requestId = nid;
+        this.list();
+      }
+    },
 
   }
 

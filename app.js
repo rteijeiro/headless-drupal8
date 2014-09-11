@@ -15,11 +15,32 @@ $(function() {
         var pass = 'password';
 
         xhr.setRequestHeader('Authorization', ("Basic " + btoa(user + ':' + pass)));
+        xhr.setRequestHeader('Content-type', 'application/hal+json');
       };
 
       switch(method) {
 
-        case 'patch':
+        case 'update':
+          options.type = 'PATCH';
+          options.data = '{"_links":{"type":{"href":"http://rteijeiro-macbook.local:8081/drupal/rest/type/node/page"}}}' + JSON.stringify(model.toJSON());
+          options.data = {
+            "_links": {
+              "type": {
+                "href": "http://rteijeiro-macbook.local:8081/drupal/rest/type/node/page"
+              }
+            },
+            "title": [{
+              "value": "Article created through REST"
+            }],
+            "body": [{
+              "value": "Body of the article created using a POST REST request",
+              "format": "full_html"
+            }]
+          };
+
+          options.data = '{"_links":{"type":{"href":"http://rteijeiro-macbook.local:8081/drupal/rest/type/node/page"}},"title":[{"value":"Article created through REST"}],"body":[{"value":"Body of the article created using a POST REST request","format": "full_html"}]}';
+          console.log(options.data);
+
         case 'delete':
           options.url = '../node/' + this.get('nid');
           break;
@@ -104,6 +125,21 @@ $(function() {
       this.$el.html(this.template(this.model.toJSON()));
 
       return this;
+    },
+
+    events: {
+      'click button': 'saveArticle'
+    },
+
+    saveArticle: function() {
+      this.model.set({
+        'title': $('#article-title').val(),
+        'body': $('#article-body').val()
+      });
+
+      this.model.save();
+
+      return false;
     }
 
   });

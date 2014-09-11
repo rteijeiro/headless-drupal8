@@ -37,7 +37,7 @@ $(function() {
 
     model: Article,
 
-    url: 'http://rteijeiro-macbook.local:8081/drupal/articles/rest'
+    url: 'http://path-to-your-localhost/drupal/articles/rest'
 
   });
 

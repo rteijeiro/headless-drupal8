@@ -19,7 +19,6 @@ $(function() {
 
       switch(method) {
 
-        case 'patch':
         case 'delete':
           options.url = '../node/' + this.get('nid');
           break;

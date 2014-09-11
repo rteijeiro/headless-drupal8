@@ -92,21 +92,6 @@ $(function() {
 
   });
 
-  // Article add/edit form.
-  // Provides the template used to display the form to add
-  // or edit an article.
-  var ArticleEditView = Backbone.View.extend({
-
-    template: _.template($('#article-form').html()),
-
-    render: function(event) {
-      this.$el.html(this.template(this.model.toJSON()));
-
-      return this;
-    }
-
-  });
-
   // Application Router.
   // Provides the routes for application navigation.
   var AppRouter = Backbone.Router.extend({
@@ -114,7 +99,6 @@ $(function() {
     routes: {
       '': 'articlesList',
       'article/:nid': 'articleDetails',
-      'article/:nid/edit': 'articleEdit',
       'article/:nid/delete': 'articleDelete'
     },
     articlesList: function() {
@@ -122,9 +106,6 @@ $(function() {
     },
     articleDetails: function(nid) {
       App.details(nid);
-    },
-    articleEdit: function(nid) {
-      App.edit(nid);
     },
     articleDelete: function(nid) {
       App.delete(nid);
@@ -155,18 +136,6 @@ $(function() {
       if (this.articlesList) {
         this.article = this.articlesList.get(nid);
         this.articleView = new ArticleView({ model: this.article });
-        $('#article-details-container').html(this.articleView.render().el);
-      }
-      else {
-        this.requestedId = nid;
-        this.list();
-      }
-    },
-
-    edit: function(nid) {
-      if (this.articlesList) {
-        this.article = this.articlesList.get(nid);
-        this.articleView = new ArticleEditView({ model: this.article });
         $('#article-details-container').html(this.articleView.render().el);
       }
       else {
